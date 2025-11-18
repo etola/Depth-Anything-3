@@ -38,6 +38,7 @@ def export_to_gs_ply(
     ] = 1,  # export GS every N views, useful for extremely dense inputs
 ):
     gs_world = prediction.gaussians
+    assert gs_world is not None, "Gaussians are not available"
     pred_depth = torch.from_numpy(prediction.depth).unsqueeze(-1).to(gs_world.means)  # v h w 1
     idx = 0
     os.makedirs(os.path.join(export_dir, "gs_ply"), exist_ok=True)
@@ -82,6 +83,7 @@ def export_to_gs_video(
     video_quality: Literal["low", "medium", "high"] = "high",
 ) -> None:
     gs_world = prediction.gaussians
+    assert gs_world is not None, "Gaussians are not available"
     # if target poses are not provided, render the (smooth/interpolate) input poses
     if extrinsics is not None:
         tgt_extrs = extrinsics
