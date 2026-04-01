@@ -15,11 +15,11 @@ then
 fi
 source $VENV_DIR/bin/activate
 
-pip install --upgrade pip setuptools
-pip install -r $DIR/config/requirements.txt
 pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu129
 
 # setup depth anything v3
 cd $DIR/ && pip install -e .
 # pip install --no-build-isolation git+https://github.com/nerfstudio-project/gsplat.git@0b4dddf04cb687367602c01196913cde6a743d70
 
+# pip install --upgrade pip setuptools
+pip install -r $DIR/config/requirements.txt
