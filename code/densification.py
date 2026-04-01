@@ -147,6 +147,7 @@ class DensificationConfig:
     """Configuration for densification process."""
     def __init__(self):
         self.scene_folder: str = ""
+        self.colmap_folder: Optional[str] = None
         self.output_folder: str = ""
         self.image_load_size: int = 1024
         self.target_h: int = 518
@@ -218,6 +219,12 @@ class DensificationConfig:
             type=str,
             required=True,
             help="Scene folder containing 'images' and 'sparse' subdirectories",
+        )
+        parser.add_argument(
+            "--colmap_folder",
+            type=str,
+            default="sparse_export",
+            help="Colmap folder containing 'sparse' subdirectory",
         )
         parser.add_argument(
             "-ff", "--enable-folder-filter",
@@ -305,6 +312,7 @@ class DensificationConfig:
             raise ValueError("Scene folder is required and must exist")
 
         self.scene_folder = args.scene_folder
+        self.colmap_folder = args.colmap_folder
         self.output_folder = os.path.join(args.scene_folder, args.output_folder)
         self.resolution = args.resolution
         self.min_track_length = args.min_track_length
@@ -378,9 +386,12 @@ class DensificationProblem:
         if not os.path.isdir(config.scene_folder):
             raise ValueError(f"Scene directory {config.scene_folder} does not exist")
 
-        sparse_dir = os.path.join(config.scene_folder, "sparse")
-        if not os.path.isdir(sparse_dir):
-            raise ValueError(f"Sparse directory {sparse_dir} does not exist")
+        if config.colmap_folder is not None:
+            sparse_dir = os.path.join(config.scene_folder, config.colmap_folder)
+        else:
+            sparse_dir = os.path.join(config.scene_folder, "sparse")
+            if not os.path.isdir(sparse_dir):
+                raise ValueError(f"Sparse directory {sparse_dir} does not exist")
 
         images_dir = os.path.join(config.scene_folder, "images")
         if not os.path.isdir(images_dir):
